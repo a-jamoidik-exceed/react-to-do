@@ -7,7 +7,8 @@ class Form extends React.Component {
             this.props.onAddNewTodo({
                 content : e.currentTarget.value,
                 done : false,
-                date : new Date()
+                date : new Date(),
+                id : Math.floor(100000 + Math.random() * 900000)
             })
             e.currentTarget.value = null;
         }

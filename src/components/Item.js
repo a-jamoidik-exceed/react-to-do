@@ -1,22 +1,27 @@
 import React from 'react';
 
 class Item extends React.Component {
+    constructor(props) {
+        super(props);
+        this.inputRef = React.createRef();
+    }
     state = {
         editMode : false,
         currentValue : this.props.data.content
     }
     handleOnClickBtnDel = (e) => {
         e.preventDefault();
-        this.props.onDelTodoItem(e.currentTarget.id);
+        this.props.onDelTodoItem(this.props.data.id);
     }
     handleOnClkDone = (e) => {
         e.preventDefault();
-        this.props.onDoneTodoItem(e.currentTarget.id)
+        this.props.onDoneTodoItem(this.props.data.id)
     }
     handleOnDblClk = (e) => {
         this.setState((state) => {
             return {editMode : !state.editMode}
         })
+        this.inputRef.current.focus();
     }
     handleOnChangeTodo = (e) => {
         this.setState({currentValue : e.currentTarget.value});
@@ -25,7 +30,7 @@ class Item extends React.Component {
         if (e.key === 'Enter' && e.currentTarget.value.trim() !== '') {
             this.props.onChangeDataTodo({
                 content : e.currentTarget.value,
-                date : this.props.data.date
+                id : this.props.data.id
             })
             this.setState((state) => {
                 return {editMode : !state.editMode}
@@ -37,7 +42,6 @@ class Item extends React.Component {
             <li className="section-todo-list-item">
                 <div className="section-todo-list-item-control">
                     <button
-                    id={this.props.data.date}
                     className={this.props.data.done ? 'section-todo-list-item-control__done done' : 'section-todo-list-item-control__done'}
                     onClick={this.handleOnClkDone}
                     ></button>
@@ -53,12 +57,12 @@ class Item extends React.Component {
                     value={this.state.currentValue}
                     onKeyPress={this.handleOnKeyPress}
                     onChange={this.handleOnChangeTodo}
-                    id={this.props.data.date}/>
+                    ref={this.inputRef}
+                    />
                 </div>
                 <div className="section-todo-list-item-delete">
                     <button
                     className="section-todo-list-item-delete__delete"
-                    id={this.props.data.date}
                     onClick={this.handleOnClickBtnDel}
                     ></button>
                 </div>

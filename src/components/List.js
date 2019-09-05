@@ -9,7 +9,7 @@ class List extends React.Component {
                 if (this.props.filterDone) {
                     if (item.done) {
                         return (<Item
-                            key={item.date}
+                            key={item.id}
                             data={item}
                             onDelTodoItem={this.props.onDelTodoItem}
                             onDoneTodoItem={this.props.onDoneTodoItem}
@@ -20,7 +20,7 @@ class List extends React.Component {
                 } else {
                     if (!item.done) {
                         return (<Item
-                            key={item.date}
+                            key={item.id}
                             data={item}
                             onDelTodoItem={this.props.onDelTodoItem}
                             onDoneTodoItem={this.props.onDoneTodoItem}
@@ -31,7 +31,7 @@ class List extends React.Component {
                 }
             } else {
                 return (<Item
-                    key={item.date}
+                    key={item.id}
                     data={item}
                     onDelTodoItem={this.props.onDelTodoItem}
                     onDoneTodoItem={this.props.onDoneTodoItem}

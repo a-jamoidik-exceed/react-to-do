@@ -9,8 +9,8 @@ class Todo extends React.Component {
         filterDone : false,
         filterApply : false
     }
-    handleDelTodoItem = (date) => {
-        let indexDelTodo = this.state.todos.findIndex((item) => item.date == date);
+    handleDelTodoItem = (id) => {
+        let indexDelTodo = this.state.todos.findIndex((item) => item.id === id);
         let newTodos = new Array().concat(this.state.todos);
         newTodos.splice(indexDelTodo, 1);
         this.setState({todos : newTodos});
@@ -20,8 +20,8 @@ class Todo extends React.Component {
             todos : [newTodo, ...this.state.todos]
         })
     }
-    handleDoneTodoItem = (date) => {
-        let indexDoneTodo = this.state.todos.findIndex((item) => item.date == date);
+    handleDoneTodoItem = (id) => {
+        let indexDoneTodo = this.state.todos.findIndex((item) => item.id == id);
         let newTodos = new Array().concat(this.state.todos);
         newTodos[indexDoneTodo].done = true;
         this.setState({todos : newTodos});
@@ -53,7 +53,7 @@ class Todo extends React.Component {
     }
     handleChangeDataTodo = (data) => {
         let newTodos = this.state.todos.map((item) => {
-             if (item.date === data.date) {
+             if (item.id === data.id) {
                 item.content = data.content;
             }
             return item;
