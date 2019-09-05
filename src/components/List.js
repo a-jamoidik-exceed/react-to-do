@@ -2,13 +2,52 @@ import React from 'react';
 import Item from './Item';
 
 class List extends React.Component {
+    listRender = (todos) => {
+        let list = [];
+        list = todos.map((item, index) => {
+            if (this.props.filterApply) {
+                if (this.props.filterDone) {
+                    if (item.done) {
+                        return (<Item
+                            key={item.date}
+                            data={item}
+                            onDelTodoItem={this.props.onDelTodoItem}
+                            onDoneTodoItem={this.props.onDoneTodoItem}
+                            onChangeDataTodo={this.props.onChangeDataTodo}
+                            />
+                        );
+                    }
+                } else {
+                    if (!item.done) {
+                        return (<Item
+                            key={item.date}
+                            data={item}
+                            onDelTodoItem={this.props.onDelTodoItem}
+                            onDoneTodoItem={this.props.onDoneTodoItem}
+                            onChangeDataTodo={this.props.onChangeDataTodo}
+                            />
+                        );
+                    }
+                }
+            } else {
+                return (<Item
+                    key={item.date}
+                    data={item}
+                    onDelTodoItem={this.props.onDelTodoItem}
+                    onDoneTodoItem={this.props.onDoneTodoItem}
+                    onChangeDataTodo={this.props.onChangeDataTodo}
+                    />
+                );
+            }
+        })
+        return list;
+    }
+    
     render () {
         return (
-            <section class="section-outer">
-                <section className="section-todo">
-                    <Item />
-                </section>
-            </section>
+            <ul className="section-todo-list">
+                {this.listRender(this.props.todos)}
+            </ul>      
         )
     }
 }
