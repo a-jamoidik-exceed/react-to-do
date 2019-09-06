@@ -3,7 +3,6 @@ import Header from './components/Header';
 import Todo from './components/Todo';
 import './style.scss';
 import './normalize.css'
-
 import './App.css';
 
 class App extends React.Component {
