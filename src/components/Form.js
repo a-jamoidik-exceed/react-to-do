@@ -20,7 +20,7 @@ class Form extends React.Component {
         return (
             <div className="section-todo-form">
                 <div className="section-todo-form-control">
-                    <img className="section-todo-form-control__done" src={arrow} onClick={this.handleClkAllCompleted} />
+                    <img className="section-todo-form-control__done" src={arrow} alt="done" onClick={this.handleClkAllCompleted} />
                 </div>
                 <div className="section-todo-form-input">
                     <input className="section-todo-form-input__text" type="text" placeholder="What needs to be done?" onKeyDown={this.handleOnKeyPress}/>

@@ -11,7 +11,7 @@ class Todo extends React.Component {
     }
     handleDelTodoItem = (id) => {
         let indexDelTodo = this.state.todos.findIndex((item) => item.id === id);
-        let newTodos = new Array().concat(this.state.todos);
+        let newTodos = [].concat(this.state.todos);
         newTodos.splice(indexDelTodo, 1);
         this.setState({todos : newTodos});
     }
@@ -21,8 +21,8 @@ class Todo extends React.Component {
         })
     }
     handleDoneTodoItem = (id) => {
-        let indexDoneTodo = this.state.todos.findIndex((item) => item.id == id);
-        let newTodos = new Array().concat(this.state.todos);
+        let indexDoneTodo = this.state.todos.findIndex((item) => item.id === id);
+        let newTodos = [].concat(this.state.todos);
         newTodos[indexDoneTodo].done = true;
         this.setState({todos : newTodos});
     }
@@ -34,6 +34,7 @@ class Todo extends React.Component {
     handleClearCompleted = () => {
         let newTodos = this.state.todos.filter((item) => {
             if (!item.done) return item;
+            else return false;
         });
         this.setState({todos : newTodos});
     }
@@ -47,12 +48,13 @@ class Todo extends React.Component {
     countActiveTodo = () => {
         let activeTodo = this.state.todos.find((item) => {
             if (!item.done) return item;
+            else return false;
         })
         if (activeTodo.length > 0) return activeTodo.length;
         else return 0;
     }
     handleChangeDataTodo = (data) => {
-        let newTodos = this.state.todos.map((item) => {
+        this.state.todos.map((item) => {
              if (item.id === data.id) {
                 item.content = data.content;
             }
@@ -60,7 +62,7 @@ class Todo extends React.Component {
         })
     } 
     componentDidMount () {
-        fetch('http://localhost:3000/todoData.json')
+        fetch('/todoData.json')
         .then(res => {
             return res.json();
         })

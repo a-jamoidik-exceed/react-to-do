@@ -1,10 +1,6 @@
 import React from 'react';
 
 class Item extends React.Component {
-    constructor(props) {
-        super(props);
-        this.inputRef = React.createRef();
-    }
     state = {
         editMode : false,
         currentValue : this.props.data.content
@@ -21,7 +17,6 @@ class Item extends React.Component {
         this.setState((state) => {
             return {editMode : !state.editMode}
         })
-        this.inputRef.current.focus();
     }
     handleOnChangeTodo = (e) => {
         this.setState({currentValue : e.currentTarget.value});
@@ -47,18 +42,20 @@ class Item extends React.Component {
                     ></button>
                 </div>
                 <div className="section-todo-list-item-input">
-                    <span 
-                    className={this.state.editMode ? "section-todo-list-item-input__text-view hidden" : "section-todo-list-item-input__text-view"}
-                    onDoubleClick={this.handleOnDblClk}
-                    >{this.props.data.content}</span>
-                    <input
-                    className={this.state.editMode ? "section-todo-list-item-input__text-change" : "section-todo-list-item-input__text-change hidden"}
-                    type="text"
-                    value={this.state.currentValue}
-                    onKeyPress={this.handleOnKeyPress}
-                    onChange={this.handleOnChangeTodo}
-                    ref={this.inputRef}
-                    />
+                    { this.state.editMode ?
+                        <input
+                        className="section-todo-list-item-input__text-change"
+                        type="text"
+                        value={this.state.currentValue}
+                        onKeyPress={this.handleOnKeyPress}
+                        onChange={this.handleOnChangeTodo}
+                        />
+                        :
+                        <span 
+                        className="section-todo-list-item-input__text-view"
+                        onDoubleClick={this.handleOnDblClk}
+                        >{this.props.data.content}</span>
+                    }
                 </div>
                 <div className="section-todo-list-item-delete">
                     <button

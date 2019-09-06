@@ -39,6 +39,7 @@ class List extends React.Component {
                     />
                 );
             }
+            return [];
         })
         return list;
     }

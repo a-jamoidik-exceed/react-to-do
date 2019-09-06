@@ -1,8 +1,8 @@
 import React from 'react';
 import Header from './components/Header';
 import Todo from './components/Todo';
-import style from './style.scss';
-import normalize from './normalize.css'
+import './style.scss';
+import './normalize.css'
 
 import './App.css';
 
