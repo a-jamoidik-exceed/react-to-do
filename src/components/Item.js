@@ -8,12 +8,12 @@ class Item extends React.Component {
 
   handleOnClickBtnDel = e => {
     e.preventDefault();
-    this.props.onDelTodoItem(this.props.data.id);
+    this.props.onDelTodoItem(this.props.data._id);
   };
 
   handleOnClkDone = e => {
     e.preventDefault();
-    this.props.onDoneTodoItem(this.props.data.id);
+    this.props.onDoneTodoItem(this.props.data._id);
   };
 
   handleOnDblClk = e => {
@@ -30,7 +30,7 @@ class Item extends React.Component {
     if (e.key === "Enter" && e.currentTarget.value.trim() !== "") {
       this.props.onChangeDataTodo({
         content: e.currentTarget.value,
-        id: this.props.data.id
+        _id: this.props.data._id
       });
       this.setState(state => {
         return { editMode: !state.editMode };

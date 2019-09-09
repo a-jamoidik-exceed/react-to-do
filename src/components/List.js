@@ -12,7 +12,7 @@ const List = props => {
     }
     return filteredArray.map(item => (
       <Item
-        key={item.id}
+        key={item._id}
         data={item}
         onDelTodoItem={props.onDelTodoItem}
         onDoneTodoItem={props.onDoneTodoItem}

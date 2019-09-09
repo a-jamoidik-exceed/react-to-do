@@ -11,15 +11,14 @@ class Todo extends React.Component {
     updating: false
   };
 
-  todosUpdate = newTodos => {
-    if (newTodos) {
-      axios({
-        method: "put",
-        url: `http://127.0.0.1:5000/${localStorage.user}/todos/update`,
-        data: newTodos
-      });
-    }
-  };
+  componentDidMount() {
+    axios({
+      method: "get",
+      url: "http://127.0.0.1:5000/todos"
+    }).then(res => {
+      this.setState({ todos: res.data });
+    });
+  }
 
   todosGet = () => {
     axios({
@@ -31,27 +30,34 @@ class Todo extends React.Component {
   };
 
   handleDelTodoItem = id => {
-    let indexDelTodo = this.state.todos.findIndex(item => item.id === id);
-    let newTodos = [...this.state.todos];
-    newTodos.splice(indexDelTodo, 1);
-    this.setState({ todos: newTodos });
-    this.todosUpdate(newTodos);
+    axios({
+      method: "delete",
+      url: `http://127.0.0.1:5000/todos/${id}/delete`
+    }).then(res => {
+      this.setState({ todos: res.data });
+    });
   };
 
   handleAddNewTodo = newTodo => {
-    let newTodos = [newTodo, ...this.state.todos];
-    this.setState(() => {
-      return { todos: newTodos };
+    axios({
+      method: "post",
+      url: `http://127.0.0.1:5000/todos/create-todo`,
+      data: newTodo
+    }).then(res => {
+      this.setState({ todos: res.data });
     });
-    this.todosUpdate(newTodos);
   };
 
   handleDoneTodoItem = id => {
-    let indexDoneTodo = this.state.todos.findIndex(item => item.id === id);
-    let newTodos = [].concat(this.state.todos);
-    newTodos[indexDoneTodo].done = true;
-    this.setState({ todos: newTodos });
-    this.todosUpdate(newTodos);
+    let todo = this.state.todos.find(item => item._id === id);
+    todo.done = !todo.done;
+    axios({
+      method: "put",
+      url: `http://127.0.0.1:5000/todos/${id}/update`,
+      data: todo
+    }).then(res => {
+      this.setState({ todos: res.data });
+    });
   };
 
   handleChangeFilter = newStatus => {
@@ -59,20 +65,27 @@ class Todo extends React.Component {
   };
 
   handleClearCompleted = () => {
-    let newTodos = this.state.todos.filter(item => {
-      if (!item.done) return item;
-      else return false;
-    });
-    this.setState({ todos: newTodos });
-    this.todosUpdate(newTodos);
+    axios({
+      method: "delete",
+      url: `http://127.0.0.1:5000/todos/delete-completed`,
+    }).then(res => {
+      this.setState({ todos: res.data });
+    })
   };
 
   handleAllCompleted = () => {
-    let newTodos = this.state.todos.map(item => {
-      item.done = true;
-      return item;
+    axios({
+      method: "put",
+      url: `http://127.0.0.1:5000/todos/all-completed`,
+      data: { done: !this.state.todos[0].done}
+    }).then(res => {
+      this.setState({ todos: res.data });
     });
-    this.setState({ todos: newTodos });
+    // let newTodos = this.state.todos.map(item => {
+    //   item.done = !item.done;
+    //   return item;
+    // });
+    // this.setState({ todos: newTodos });    
   };
 
   countActiveTodo = () => {
@@ -84,26 +97,20 @@ class Todo extends React.Component {
     else return 0;
   };
   handleChangeDataTodo = data => {
-    this.state.todos.map(item => {
-      if (item.id === data.id) {
-        item.content = data.content;
-      }
-      return item;
-    });
-  };
-  componentDidMount() {
-    if (!localStorage.user) {
+    let todo = this.state.todos.find(item => item.id === data.id);
+    if (todo) {
+      todo.content = data.content;
+      delete todo._id;
       axios({
-        method: "post",
-        url: "http://127.0.0.1:5000/users/create"
+        method: "put",
+        url: `http://127.0.0.1:5000/todos/${data._id}/update`,
+        data: todo
       }).then(res => {
-        localStorage.setItem("user", res.data);
+        this.setState({ todos: res.data });
       });
-    } else {
-      this.todosGet();
     }
-  }
-  componentDidUpdate() {}
+  };
+
   render() {
     return (
       <section className="section-outer">
