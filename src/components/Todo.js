@@ -1,8 +1,16 @@
 import React from "react";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import Form from "./Form";
 import List from "./List";
 import Control from "./Control";
+
+toast.configure({
+  autoClose: 3000,
+  draggable: false
+});
 
 class Todo extends React.Component {
   state = {
@@ -20,21 +28,13 @@ class Todo extends React.Component {
     });
   }
 
-  todosGet = () => {
-    axios({
-      method: "get",
-      url: `http://127.0.0.1:5000/${localStorage.user}`
-    }).then(res => {
-      this.setState({ todos: res.data.todos });
-    });
-  };
-
   handleDelTodoItem = id => {
     axios({
       method: "delete",
       url: `http://127.0.0.1:5000/todos/${id}/delete`
     }).then(res => {
       this.setState({ todos: res.data });
+      this.notifyDelete();
     });
   };
 
@@ -45,6 +45,7 @@ class Todo extends React.Component {
       data: newTodo
     }).then(res => {
       this.setState({ todos: res.data });
+      this.notifyAdd();
     });
   };
 
@@ -57,6 +58,7 @@ class Todo extends React.Component {
       data: todo
     }).then(res => {
       this.setState({ todos: res.data });
+      if (todo.done) this.notifyDone();
     });
   };
 
@@ -67,25 +69,22 @@ class Todo extends React.Component {
   handleClearCompleted = () => {
     axios({
       method: "delete",
-      url: `http://127.0.0.1:5000/todos/delete-completed`,
+      url: `http://127.0.0.1:5000/todos/delete-completed`
     }).then(res => {
       this.setState({ todos: res.data });
-    })
+      this.notifyDelete();
+    });
   };
 
   handleAllCompleted = () => {
     axios({
       method: "put",
       url: `http://127.0.0.1:5000/todos/all-completed`,
-      data: { done: !this.state.todos[0].done}
+      data: { done: !this.state.todos[0].done }
     }).then(res => {
       this.setState({ todos: res.data });
+      if (res.data[0].done) this.notifyDone();
     });
-    // let newTodos = this.state.todos.map(item => {
-    //   item.done = !item.done;
-    //   return item;
-    // });
-    // this.setState({ todos: newTodos });    
   };
 
   countActiveTodo = () => {
@@ -107,14 +106,37 @@ class Todo extends React.Component {
         data: todo
       }).then(res => {
         this.setState({ todos: res.data });
+        this.notifyEdit();
       });
     }
   };
+
+  notifyAdd = () =>
+    toast("Added", { containerId: "topRight", hideProgressBar: true });
+  notifyEdit = () =>
+    toast("Edited", { containerId: "topRight", hideProgressBar: true });
+  notifyDelete = () =>
+    toast("Deleted", { containerId: "topRight", hideProgressBar: true });
+  notifyCompleted = () =>
+    toast("Completed", { containerId: "topRight", hideProgressBar: true });
+  notifyDone = () =>
+    toast("Done!", { containerId: "topRight", hideProgressBar: true });
 
   render() {
     return (
       <section className="section-outer">
         <section className="section-todo">
+          <ToastContainer
+            containerId={"topRight"}
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar
+            newestOnTop={false}
+            closeOnClick
+            pauseOnVisibilityChange
+            draggable
+            pauseOnHover
+          />
           <Form
             onAddNewTodo={this.handleAddNewTodo}
             onClkAllCompleted={this.handleAllCompleted}
