@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import Form from "./Form";
 import List from "./List";
 import Control from "./Control";
@@ -6,9 +7,27 @@ import Control from "./Control";
 class Todo extends React.Component {
   state = {
     todos: [],
-    filterDone: false,
-    filterApply: false,
-    filterStatus: "all"
+    filterStatus: "all",
+    updating: false
+  };
+
+  todosUpdate = newTodos => {
+    if (newTodos) {
+      axios({
+        method: "put",
+        url: `http://127.0.0.1:5000/${localStorage.user}/todos/update`,
+        data: newTodos
+      });
+    }
+  };
+
+  todosGet = () => {
+    axios({
+      method: "get",
+      url: `http://127.0.0.1:5000/${localStorage.user}`
+    }).then(res => {
+      this.setState({ todos: res.data.todos });
+    });
   };
 
   handleDelTodoItem = id => {
@@ -16,12 +35,15 @@ class Todo extends React.Component {
     let newTodos = [...this.state.todos];
     newTodos.splice(indexDelTodo, 1);
     this.setState({ todos: newTodos });
+    this.todosUpdate(newTodos);
   };
 
   handleAddNewTodo = newTodo => {
-    this.setState({
-      todos: [newTodo, ...this.state.todos]
+    let newTodos = [newTodo, ...this.state.todos];
+    this.setState(() => {
+      return { todos: newTodos };
     });
+    this.todosUpdate(newTodos);
   };
 
   handleDoneTodoItem = id => {
@@ -29,6 +51,7 @@ class Todo extends React.Component {
     let newTodos = [].concat(this.state.todos);
     newTodos[indexDoneTodo].done = true;
     this.setState({ todos: newTodos });
+    this.todosUpdate(newTodos);
   };
 
   handleChangeFilter = newStatus => {
@@ -41,6 +64,7 @@ class Todo extends React.Component {
       else return false;
     });
     this.setState({ todos: newTodos });
+    this.todosUpdate(newTodos);
   };
 
   handleAllCompleted = () => {
@@ -50,6 +74,7 @@ class Todo extends React.Component {
     });
     this.setState({ todos: newTodos });
   };
+
   countActiveTodo = () => {
     let activeTodo = this.state.todos.find(item => {
       if (!item.done) return item;
@@ -67,14 +92,18 @@ class Todo extends React.Component {
     });
   };
   componentDidMount() {
-    fetch("/todoData.json")
-      .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        this.setState({ todos: data });
+    if (!localStorage.user) {
+      axios({
+        method: "post",
+        url: "http://127.0.0.1:5000/users/create"
+      }).then(res => {
+        localStorage.setItem("user", res.data);
       });
+    } else {
+      this.todosGet();
+    }
   }
+  componentDidUpdate() {}
   render() {
     return (
       <section className="section-outer">
