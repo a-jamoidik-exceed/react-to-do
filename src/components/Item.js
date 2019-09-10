@@ -63,7 +63,11 @@ class Item extends React.Component {
             />
           ) : (
             <span
-              className="section-todo-list-item-input__text-view"
+              className={
+                this.props.data.done
+                  ? "section-todo-list-item-input__text-view done"
+                  : "section-todo-list-item-input__text-view"
+              }
               onDoubleClick={this.handleOnDblClk}
             >
               {this.props.data.content}

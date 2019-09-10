@@ -133,6 +133,10 @@ input:focus, button:focus {
                     width: 100%;
                     text-align: left;
                 }
+                .done {
+                    text-decoration: line-through; 
+                    color: rgba(0,0,0,.2);
+                }
                 &__text-change {
                     width: 100%;
                     border: 1px solid rgba(0,0,0,.15);

@@ -26,6 +26,7 @@ class Todo extends React.Component {
     }).then(res => {
       this.setState({ todos: res.data });
     });
+    
   }
 
   handleDelTodoItem = id => {
@@ -33,7 +34,11 @@ class Todo extends React.Component {
       method: "delete",
       url: `http://127.0.0.1:5000/todos/${id}/delete`
     }).then(res => {
-      this.setState({ todos: res.data });
+      let newTodos = this.state.todos.filter((item) => {
+        if (item._id === res.data._id) return false;
+        return true;
+      });
+      this.setState({ todos: newTodos });
       this.notifyDelete();
     });
   };
@@ -57,7 +62,11 @@ class Todo extends React.Component {
       url: `http://127.0.0.1:5000/todos/${id}/update`,
       data: todo
     }).then(res => {
-      this.setState({ todos: res.data });
+      let newTodos = this.state.todos.map((item) => {
+        if (item._id === res.data._id) return res.data;
+        else return item;
+      });
+      this.setState({ todos: newTodos });
       if (todo.done) this.notifyDone();
     });
   };
@@ -77,6 +86,7 @@ class Todo extends React.Component {
   };
 
   handleAllCompleted = () => {
+    if (!this.state.todos[0]) return;
     axios({
       method: "put",
       url: `http://127.0.0.1:5000/todos/all-completed`,
@@ -95,17 +105,21 @@ class Todo extends React.Component {
     if (activeTodo.length > 0) return activeTodo.length;
     else return 0;
   };
+
   handleChangeDataTodo = data => {
     let todo = this.state.todos.find(item => item.id === data.id);
     if (todo) {
       todo.content = data.content;
-      delete todo._id;
       axios({
         method: "put",
         url: `http://127.0.0.1:5000/todos/${data._id}/update`,
         data: todo
       }).then(res => {
-        this.setState({ todos: res.data });
+        let newTodos = this.state.todos.map((item) => {
+          if (item._id === res.data._id) return res.data;
+          else return item;
+        });
+        this.setState({ todos: newTodos });
         this.notifyEdit();
       });
     }
